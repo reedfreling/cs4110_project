@@ -1,0 +1,9 @@
+*.cmi
+*.cmo
+lexer.ml
+parser.ml
+parser.mli
+parser.output
+modal
+*.pdf
+.DS_Store
