@@ -1,7 +1,3 @@
-(* CS 4110 Homework 3
-   This is the file where you'll do your work. Your job is to take an AST
-   (which has already been parsed for you) and execute it. *)
-
 open Ast
 open Pprint
 

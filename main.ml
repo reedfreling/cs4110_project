@@ -1,7 +1,3 @@
-(* CS 4110 Homework 3
-   The top-level entry point for running our interpreter. You shouldn't need
-   to change this file; instead, change the interpreter itself in eval.ml. *)
-
 (* Main function. *)
 let () =
   let _ =
