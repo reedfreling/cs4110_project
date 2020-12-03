@@ -15,11 +15,13 @@ and strBexp e = match e with
   | And(b1, b2) -> sp "(%s and %s)" (strBexp b1) (strBexp b2)
   | Or(b1, b2) -> sp "(%s or %s)" (strBexp b1) (strBexp b2)
   | Var x -> x
+  | Unknown (x, b) -> strBexp b
 and strCom(n, c) =
   match c with
   | Assign(x, b) -> sp "%s%s := %s" (space n) x (strBexp b)
   | Seq(c1, c2) -> sp "%s;\n%s" (strCom(n, c1)) (strCom(n, c2))
   | Print b -> sp "%sprint %s" (space(n)) (strBexp b)
+  | Intro x -> failwith "Odd to print"
 and strInfo ((l1,c1),(l2,c2)) =
   if l2=l1
   then Printf.sprintf "line %d, characters %d-%d" l1 c1 c2

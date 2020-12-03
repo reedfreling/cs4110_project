@@ -13,6 +13,7 @@ and bexp =
 | And of bexp * bexp
 | Or of bexp * bexp
 | Var of var
+| Unknown of var * bexp
 
 (* Commands. *)
 and com =
