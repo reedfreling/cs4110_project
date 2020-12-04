@@ -10,7 +10,7 @@ The Files
 - `eval.ml`:
   The interpreter for the ASTs.
 
-- 'kripke.ml'
+- `kripke.ml`:
   The data structure for Kripke models.
 
 - `main.ml`:
@@ -42,20 +42,20 @@ Now you can run the executable on a test program: `./modal test.modal`.
 
 This will parse the file test.modal and evaluate the program.
 
-Test examples are given by test1.modal, test2.modal, test3.modal, test4.modal.
+Test examples are given by `test1.modal`, `test2.modal`, `test3.modal`, `test4.modal`.
 
 Tests 1-3 show the propositional logic functionality. 
 
-test3.modal is a simple example of dynamic scope in our language.
+`test3.modal` is a simple example of dynamic scope in our language.
 
-test4.modal is an example of modal logic in our language.
+`test4.modal` is an example of modal logic in our language.
 
 I will explain each of the new commands for modal logic.
 
-- [create k] creates a new Kripke model with an empty set of worlds and empty relations
-- [k add world w] adds world w to the Kripke model [k], assuming [k] was created
-- [k add valuation w a] sets propositional variable [a] to be true in world [w] in model [k]
-- [k w ||- b] returns the truth value of modal logic formula [b] in world [w] in model [k]
+- `[create k]` creates a new Kripke model with an empty set of worlds and empty relations
+- `[k add world w]` adds world w to the Kripke model [k], assuming [k] was created
+- `[k add valuation w a]` sets propositional variable [a] to be true in world [w] in model [k]
+- `[k w ||- b]` returns the truth value of modal logic formula [b] in world [w] in model [k]
     - one can only assign the result to another variable or print out the result
-- [] represents the square notation for "it is necessary"
-- <> represents the diamond notation for "it is possible"
+- `[]a` represents the square notation for "[a] is necessary"
+- `<>a` represents the diamond notation for "[a] is possible"
