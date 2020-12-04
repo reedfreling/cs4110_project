@@ -69,7 +69,7 @@ m : SQUARE m              { Square($2) }
 kc : CREATEKRIPKE VAR     { CreateEmptyKripke(snd $2) }
   | VAR ADDWORLD VAR      { AddWorldToKripke(snd $1, snd $3) }
   | VAR ADDACCESS VAR VAR { AddAccessToKripke(snd $1, (snd $3, snd $4)) }
-  | VAR ADDVALUE VAR VAR  { AddValuationToKripke(snd $1, (snd $3, snd $4)) }
+  | VAR ADDVALUE VAR VAR  { AddValuationToKripke(snd $1, (snd $4, snd $3)) }
 
 /* Programs */
 p : c EOF                 { $1 }

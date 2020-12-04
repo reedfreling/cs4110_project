@@ -4,6 +4,7 @@ open Kripke
 
 (* Interpreter exceptions. *)
 exception UnboundVariable of var
+exception UnboundedKripkeModel of var
 exception AssignVarToSelf of var
 
 (* A type for stores. *)
@@ -74,16 +75,30 @@ let rec evalc (conf:configuration) : (store * var_store * kripke_store) =
   | (sigma, var_sigma, k_st, CreateEmptyKripke x) ->
       sigma, var_sigma, (x, empty)::k_st
   | (sigma, var_sigma, k_st, AddWorldToKripke (x, w)) ->
+    if List.exists (fun (v, _) -> v = x) k_st then
       sigma, var_sigma, 
       List.map 
       (fun (v, k) -> if v = x then (v, add_worlds k w) else (v, k)) k_st
+    else 
+      raise (UnboundedKripkeModel x)
   | (sigma, var_sigma, k_st, AddAccessToKripke (x, (w1, w2))) ->
+    if List.exists (fun (v, _) -> v = x) k_st then
       sigma, var_sigma,
       List.map 
       (fun (v, k) -> if v = x then (v, add_accessibility k (w1, w2)) else (v, k)) k_st
+    else
+      raise (UnboundedKripkeModel x)
   | (sigma, var_sigma, k_st, AddValuationToKripke (x, (p, w))) ->
+    if List.exists (fun (v, _) -> v = x) k_st then
       sigma, var_sigma,
       List.map (fun (v, k) -> if v = x then (v, add_valuation k p w) else (v, k)) k_st
+    else
+      raise (UnboundedKripkeModel x)
   | (sigma, var_sigma, k_st, AssignMexp (x, GetTruthValueFromKripke (v, (w, m)))) ->
-      failwith "unimpl"
-      
+    if List.exists (fun (v', _) -> v' = v) k_st then 
+      if List.mem x var_sigma then
+        (x, eval_mexp (List.assoc v k_st) w m)::sigma, var_sigma, k_st
+      else
+        raise (UnboundVariable x)
+    else
+      raise (UnboundedKripkeModel x)
