@@ -1,5 +1,5 @@
 MAIN := modal
-OBJS := ast.cmo lexer.cmo parser.cmo pprint.cmo eval.cmo main.cmo
+OBJS := ast.cmo lexer.cmo parser.cmo pprint.cmo eval.cmo main.cmo set.cmo kripke.cmo
 
 %.cmo: %.ml
 	ocamlc -c $<
