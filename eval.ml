@@ -1,6 +1,7 @@
 open Ast
 open Pprint
-open Kripke
+(* open Kripke *)
+
 (* Interpreter exceptions. *)
 exception UnboundVariable of var
 exception AssignVarToSelf of var
