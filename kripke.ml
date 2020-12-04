@@ -1,8 +1,9 @@
-open Ast
 open Set
-open Eval
+open Ast
 
-type world =  string
+type var = string
+
+type world = string
 
 (* (w1, w2) in W <=> w2 is accessible from w1 *)
 type access_relation = (world * world) set
@@ -57,14 +58,14 @@ let rec accessible_worlds (m : kripke) (w : world) =
     else (accessible_worlds m' w)
   | ([], r, v) -> Set.empty
 
-let rec world_to_store (m : kripke) (w : world) : Eval.store = 
+(* let rec world_to_store (m : kripke) (w : world) : Eval.store = 
   match m with
   | (worlds, r, v) -> List.map (fun (k, v') -> if List.mem w v' then (k, True) else (k, False)) v
 
 let rec world_to_var_store (m : kripke) (w : world) : Eval.var_store = 
-  let var_sigma, _ = List.split (world_to_store m w) in var_sigma
+  let var_sigma, _ = List.split (world_to_store m w) in var_sigma *)
 
-let rec check_valuation_at_world (m : kripke) (w : world) (e : mexp) : bexp = 
+(* let rec check_valuation_at_world (m : kripke) (w : world) (e : mexp) : bexp = 
   match e with
   | Bexp e' -> 
     let sigma = world_to_store m w in
@@ -136,4 +137,4 @@ let eval_mexp (m : kripke) (w : world) (e : mexp) : bool =
     match b with
     | True -> true
     | False -> false
-    | _ -> failwith "e could not be evaluated to T/F"
+    | _ -> failwith "e could not be evaluated to T/F" *)
