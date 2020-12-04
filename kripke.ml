@@ -37,7 +37,7 @@ let add_valuation (k : kripke) (x : var) (w : world) =
 (* check if w2 is accessible from w1 *)
 let rec check_accessibility (m : kripke) (w1 : world) (w2 : world) = 
   match m with
-  | (worlds, r, v) -> let w = Set.assoc_opt w1 r in
+  | (worlds, r, v) -> let w = List.assoc_opt w1 r in
     (
       match w with
       | None -> false
