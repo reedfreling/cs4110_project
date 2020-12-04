@@ -15,10 +15,12 @@ let merge (fn,pos1,_) (_,_,pos2) = (fn,pos1,pos2)
   ASSIGN SEMI PRINT
   INTRO 
   GETTRUTH CREATEKRIPKE ADDWORLD ADDACCESS ADDVALUE
+  BEXP SQUARE DIAMOND
 %token EOF
 
 %type <Ast.bexp> b
 %type <Ast.com> c
+%type <Ast.mexp> m
 %type <Ast.kripke_bexp> kb
 %type <Ast.com> p
 
@@ -49,19 +51,25 @@ c : ac SEMI c             { Seq($1, $3) }
   | ac                    { $1 }
 
 ac: VAR ASSIGN b          { Assign(snd $1, $3) }
+  | VAR ASSIGN kb         { AssignMexp(snd $1, $3) }
   | INTRO VAR             { Intro (snd $2) }
   | LBRACE c RBRACE       { $2 }
   | PRINT b               { Print $2 }
   | kc                    { $1 }
 
 /* kripke boolean expressions */
-kb : VAR GETTRUTH b { GetTruthValueFromKripke(snd $1, $3) }
+kb : VAR VAR GETTRUTH m { GetTruthValueFromKripke(snd $1, (snd $2, $4)) }
+
+/* Modal logic expressions */
+m : SQUARE m              { Square($2) }
+  | DIAMOND m             { Diamond($2) }
+  | BEXP b                { Bexp($2) }
 
 /* Kripke Commands */
-kc : CREATEKRIPKE VAR { CreateEmptyKripke(snd $2) }
-  | VAR ADDWORLD VAR { AddWorldToKripke(snd $1, snd $3) }
+kc : CREATEKRIPKE VAR     { CreateEmptyKripke(snd $2) }
+  | VAR ADDWORLD VAR      { AddWorldToKripke(snd $1, snd $3) }
   | VAR ADDACCESS VAR VAR { AddAccessToKripke(snd $1, (snd $3, snd $4)) }
-  | VAR ADDVALUE VAR VAR { AddValuationToKripke(snd $1, (snd $3, snd $4)) }
+  | VAR ADDVALUE VAR VAR  { AddValuationToKripke(snd $1, (snd $3, snd $4)) }
 
 /* Programs */
 p : c EOF                 { $1 }

@@ -1,3 +1,11 @@
 intro a; intro b; intro c;
 create k;
-k add world w1
+k add world w1;
+k add world w2;
+k add accessibility w1 w2;
+k add valuation w1 a;
+k add valuation w1 c;
+k add valuation w2 b;
+v1 := k w1 ||- a;
+v2 := k w1 ||- (a and b);
+v3 := k w1 ||- (a and c);

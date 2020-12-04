@@ -48,14 +48,16 @@ rule token = parse
 | ":="    { ASSIGN(info lexbuf) }
 | "true"  { TRUE(info lexbuf) }
 | "false" { FALSE(info lexbuf) }
-| "!"   { NOT(info lexbuf) }
+| "!"     { NOT(info lexbuf) }
 | "and"   { AND(info lexbuf) }
 | "or"    { OR(info lexbuf) }
 | "->"    { IMPLIES(info lexbuf) }
 | "<->"   { IFF(info lexbuf) }
 | "print" { PRINT(info lexbuf) }
 | "intro" { INTRO(info lexbuf) }
-| "truth valuation" { GETTRUTH(info lexbuf) }
+| "[]"    { SQUARE(info lexbuf) } 
+| "<>"    { DIAMOND(info lexbuf) }
+| "||-"   { GETTRUTH(info lexbuf) }
 | "create" { CREATEKRIPKE(info lexbuf) }
 | "add world" { ADDWORLD(info lexbuf) }
 | "add accessibility" { ADDACCESS(info lexbuf) }
