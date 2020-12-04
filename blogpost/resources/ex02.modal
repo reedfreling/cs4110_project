@@ -1,0 +1,33 @@
+create k;
+k add world s1;
+k add world s2;
+k add world s3;
+k add accessibility s1 s2;
+k add accessibility s2 s1;
+k add accessibility s2 s3;
+k add accessibility s3 s3;
+intro p; intro q;
+k add valuation s1 p; k add valuation s1 q;
+k add valuation s2 q;
+k add valuation s3 p;
+
+intro v1; intro v2; intro v3;
+v1 := k s1 ||- p;
+v2 := k s1 ||- (p and q);
+v3 := k s1 ||- (!p or !q);
+print v1; print v2; print v3;
+
+intro v4; intro v5;
+v4 := k s2 ||- (p -> q);
+v5 := k s2 ||- (q -> p);
+print v4; print v5;
+
+intro v6; intro v7;
+v6 := k s2 ||- []p;
+v7 := k s2 ||- []q;
+print v6; print v7;
+
+intro v8; intro v9;
+v8 := k s3 ||- <>p;
+v9 := k s3 ||- <>q;
+print v8; print v9

@@ -1,0 +1,18 @@
+intro a; intro b; intro c;
+c := a <-> b;
+print c;
+
+a := true;
+b := false;
+print a;
+print b;
+print (a -> b);
+print (b -> a);
+print c;
+
+b := true;
+print a;
+print b;
+print (a -> b);
+print (b -> a);
+print c
