@@ -1,3 +1,5 @@
+open Kripke
+
 (* Variables. *)
 type var = string
 
@@ -21,3 +23,13 @@ and com =
 | Seq of com * com
 | Print of bexp
 | Intro of var
+
+and kripke_bexp =
+| GetTruthValueFromKripke of (world, bexp)
+
+(* Commands specifically to interact with Kripke models. *)
+and kripke_com =
+| CreateEmptyKripke of var
+| AddWorldToKripke of (var, world)
+| AddAccessToKripke of (var, (world * world))
+| AddValuationToKripke of (var, (var, world))

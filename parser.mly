@@ -18,6 +18,8 @@ let merge (fn,pos1,_) (_,_,pos2) = (fn,pos1,pos2)
 
 %type <Ast.bexp> b
 %type <Ast.com> c
+%type <Ast.kripke_bexp> kb
+%type <Ast.kripke_com> kc
 %type <Ast.com> p
 
 %start p
@@ -50,6 +52,15 @@ ac: VAR ASSIGN b          { Assign(snd $1, $3) }
   | INTRO VAR             { Intro (snd $2) }
   | LBRACE c RBRACE       { $2 }
   | PRINT b               { Print $2 }
+
+/* kripke boolean expressions */
+kb : VAR GET_TRUTH b { GetTruthValueFromKripke($1, $3) }
+
+/* Kripke Commands */
+kc : CREATE_KRIPKE VAR { CreateEmptyKripke(snd $2) }
+  | VAR ADD_WORLD VAR { AddWorldToKripke($1, $3) }
+  | VAR ADD_ACCESS VAR VAR { AddAccessToKripke($1, ($3, $4)) }
+  | VAR ADD_VALUE VAR VAR { AddValuationToKripke($1, ($3, $4)) }
 
 /* Programs */
 p : c EOF                 { $1 }
