@@ -1,6 +1,8 @@
 (* Variables. *)
 type var = string
 
+type world = string
+
 type info = (int * int) * (int * int)
 
 (* Boolean expressions. *)
@@ -27,3 +29,10 @@ and mexp =
 | Bexp of bexp
 | Square of mexp
 | Diamond of mexp
+| CreateEmptyKripke of var
+| AddWorldToKripke of (var * world)
+| AddAccessToKripke of (var * (world * world))
+| AddValuationToKripke of (var * (var * world))
+
+and kripke_bexp =
+| GetTruthValueFromKripke of (world * bexp)

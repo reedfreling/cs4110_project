@@ -55,6 +55,11 @@ rule token = parse
 | "<->"   { IFF(info lexbuf) }
 | "print" { PRINT(info lexbuf) }
 | "intro" { INTRO(info lexbuf) }
+| "truth valuation" { GETTRUTH(info lexbuf) }
+| "create" { CREATEKRIPKE(info lexbuf) }
+| "add world" { ADDWORLD(info lexbuf) }
+| "add accessibility" { ADDACCESS(info lexbuf) }
+| "add valuation" { ADDVALUE(info lexbuf) }
 | id as v { VAR(info lexbuf, v) }
 | eof     { EOF }
 | _ as c  { error lexbuf (String.make 1 c) }
