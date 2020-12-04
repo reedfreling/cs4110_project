@@ -56,7 +56,31 @@ let rec accessible_worlds (m : kripke) (w : world) =
   | ([], r, v) -> []
 
 let rec eval_bexp (m : kripke) (w : world) (e : bexp) : bexp = 
-  failwith "todo"
+  match e with
+  | True -> True
+  | False -> False
+  | Implies (e1, e2) -> eval_bexp m w (Or (Not e1, e2))
+  | Iff (e1, e2) -> eval_bexp m w (And (Implies(e1, e2), Implies(e2, e1)))
+  | Not True -> False
+  | Not False -> True
+  | Not e' -> Not (eval_bexp m w e')
+  | And (True, e') -> eval_bexp m w e'
+  | And (False, _) -> False
+  | And (e1, e2) -> eval_bexp m w (And (eval_bexp m w e1, e2))
+  | Or (True, _) -> True
+  | Or (False, e') -> eval_bexp m w e'
+  | Or (e1, e2) -> eval_bexp m w (Or (eval_bexp m w e1, e2))
+  | Var x -> 
+    (
+    match m with
+    | (worlds, r, v) -> 
+      (
+      match List.assoc_opt x v with
+      | Some wlist -> if List.mem w wlist then True else False
+      | None -> False
+      )
+    )
+  | Unknown (v, e') -> failwith "should be no unknowns"
 
 let rec check_valuation_at_world (m : kripke) (w : world) (e : mexp) : bexp = 
   match e with
