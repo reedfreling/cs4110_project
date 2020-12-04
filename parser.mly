@@ -58,7 +58,7 @@ ac: VAR ASSIGN b          { Assign(snd $1, $3) }
   | kc                    { $1 }
 
 /* kripke boolean expressions */
-kb : VAR GETTRUTH VAR m { GetTruthValueFromKripke(snd $1, (snd $3, $4)) }
+kb : VAR VAR GETTRUTH m { GetTruthValueFromKripke(snd $1, (snd $2, $4)) }
 
 /* Modal logic expressions */
 m : SQUARE m              { Square($2) }
