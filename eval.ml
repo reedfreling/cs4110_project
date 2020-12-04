@@ -72,7 +72,7 @@ let rec evalc (conf:configuration) : (store * var_store * kripke_store) =
                         sigma, var_sigma, k_st
   | (sigma, var_sigma, k_st, Intro x) -> sigma, x::var_sigma, k_st
   | (sigma, var_sigma, k_st, CreateEmptyKripke x) ->
-      sigma, var_sigma, (x, Kripke.empty)::k_st
+      sigma, var_sigma, (x, empty)::k_st
   | (sigma, var_sigma, k_st, AddWorldToKripke (x, w)) ->
       sigma, var_sigma, 
       List.map 
