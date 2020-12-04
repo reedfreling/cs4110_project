@@ -1,7 +1,7 @@
-open Kripke
-
 (* Variables. *)
 type var = string
+
+type world = string
 
 type info = (int * int) * (int * int)
 
@@ -23,13 +23,10 @@ and com =
 | Seq of com * com
 | Print of bexp
 | Intro of var
+| CreateEmptyKripke of var
+| AddWorldToKripke of (var * world)
+| AddAccessToKripke of (var * (world * world))
+| AddValuationToKripke of (var * (var * world))
 
 and kripke_bexp =
-| GetTruthValueFromKripke of (world, bexp)
-
-(* Commands specifically to interact with Kripke models. *)
-and kripke_com =
-| CreateEmptyKripke of var
-| AddWorldToKripke of (var, world)
-| AddAccessToKripke of (var, (world * world))
-| AddValuationToKripke of (var, (var, world))
+| GetTruthValueFromKripke of (world * bexp)

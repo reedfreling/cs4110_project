@@ -13,13 +13,13 @@ let merge (fn,pos1,_) (_,_,pos2) = (fn,pos1,pos2)
   LBRACE RBRACE
   IMPLIES IFF 
   ASSIGN SEMI PRINT
-  INTRO
+  INTRO 
+  GETTRUTH CREATEKRIPKE ADDWORLD ADDACCESS ADDVALUE
 %token EOF
 
 %type <Ast.bexp> b
 %type <Ast.com> c
 %type <Ast.kripke_bexp> kb
-%type <Ast.kripke_com> kc
 %type <Ast.com> p
 
 %start p
@@ -52,15 +52,16 @@ ac: VAR ASSIGN b          { Assign(snd $1, $3) }
   | INTRO VAR             { Intro (snd $2) }
   | LBRACE c RBRACE       { $2 }
   | PRINT b               { Print $2 }
+  | kc                    { $1 }
 
 /* kripke boolean expressions */
-kb : VAR GET_TRUTH b { GetTruthValueFromKripke($1, $3) }
+kb : VAR GETTRUTH b { GetTruthValueFromKripke(snd $1, $3) }
 
 /* Kripke Commands */
-kc : CREATE_KRIPKE VAR { CreateEmptyKripke(snd $2) }
-  | VAR ADD_WORLD VAR { AddWorldToKripke($1, $3) }
-  | VAR ADD_ACCESS VAR VAR { AddAccessToKripke($1, ($3, $4)) }
-  | VAR ADD_VALUE VAR VAR { AddValuationToKripke($1, ($3, $4)) }
+kc : CREATEKRIPKE VAR { CreateEmptyKripke(snd $2) }
+  | VAR ADDWORLD VAR { AddWorldToKripke(snd $1, snd $3) }
+  | VAR ADDACCESS VAR VAR { AddAccessToKripke(snd $1, (snd $3, snd $4)) }
+  | VAR ADDVALUE VAR VAR { AddValuationToKripke(snd $1, (snd $3, snd $4)) }
 
 /* Programs */
 p : c EOF                 { $1 }
