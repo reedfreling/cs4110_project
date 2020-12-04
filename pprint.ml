@@ -21,7 +21,8 @@ and strCom(n, c) =
   | Assign(x, b) -> sp "%s%s := %s" (space n) x (strBexp b)
   | Seq(c1, c2) -> sp "%s;\n%s" (strCom(n, c1)) (strCom(n, c2))
   | Print b -> sp "%sprint %s" (space(n)) (strBexp b)
-  | Intro x -> failwith "Odd to print"
+  | Intro x -> sp "%sprint %s" (space(n)) (strBexp (Var x))
+  | _ -> failwith "No printing for this"
 and strInfo ((l1,c1),(l2,c2)) =
   if l2=l1
   then Printf.sprintf "line %d, characters %d-%d" l1 c1 c2

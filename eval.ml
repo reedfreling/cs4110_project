@@ -9,18 +9,20 @@ exception AssignVarToSelf of var
 (* A type for stores. *)
 type store = (var * bexp) list
 
-type var_store = (var) list
+type var_store = var list
+
+type kripke_store = (var * kripke) list
 
 (* A type for configurations. *)
 (* sigma, c, c', k *)
-type configuration = (store * var_store * com)
+type configuration = (store * var_store * kripke_store * com)
 
 let print_bexp b =
   print_string (strBexp b)
 
 (* Create an initial configuration from a command. *)
 let make_configuration (c:com) : configuration =
-  ([], [], c)
+  ([], [], [], c)
 
 (* Evaluate a boolean expression *)
 let rec beval (sigma : store) (var_sigma : var_store) (b : bexp) : bexp =
@@ -52,19 +54,36 @@ let rec beval (sigma : store) (var_sigma : var_store) (b : bexp) : bexp =
     if List.exists (fun (x', b') -> x' = x) sigma then beval sigma var_sigma b else Unknown (x, b)
 
 (* Evaluate a command. *)
-let rec evalc (conf:configuration) : (store * var_store) =
+let rec evalc (conf:configuration) : (store * var_store * kripke_store) =
   match conf with
-  | (sigma, var_sigma, Seq(c1, c2)) -> 
-      let c1_eval_sigma, c1_eval_var_sigma = evalc (sigma, var_sigma, c1) in
-      evalc (c1_eval_sigma, c1_eval_var_sigma, c2)
-  | (sigma, var_sigma, Assign(x, b)) -> 
+  | (sigma, var_sigma, k_st, Seq(c1, c2)) -> 
+      let c1_eval_sigma, c1_eval_var_sigma, c1_eval_k_st = 
+        evalc (sigma, var_sigma, k_st, c1) in
+      evalc (c1_eval_sigma, c1_eval_var_sigma, c1_eval_k_st, c2)
+  | (sigma, var_sigma, k_st, Assign(x, b)) -> 
       if List.mem x var_sigma
       then 
-        if b <> Var x then (x, b)::sigma, var_sigma else raise (AssignVarToSelf x)
+        if b <> Var x then (x, b)::sigma, var_sigma, k_st else raise (AssignVarToSelf x)
       else
         raise (UnboundVariable x)
-  | (sigma, var_sigma, Print b) -> print_bexp b;
+  | (sigma, var_sigma, k_st, Print b) -> print_bexp b;
                         print_string(" = "); print_bexp (beval sigma var_sigma b);
                         print_string "\n"; 
-                        sigma, var_sigma
-  | (sigma, var_sigma, Intro x) -> sigma, x::var_sigma
+                        sigma, var_sigma, k_st
+  | (sigma, var_sigma, k_st, Intro x) -> sigma, x::var_sigma, k_st
+  | (sigma, var_sigma, k_st, CreateEmptyKripke x) ->
+      sigma, var_sigma, (x, Kripke.empty)::k_st
+  | (sigma, var_sigma, k_st, AddWorldToKripke (x, w)) ->
+      sigma, var_sigma, 
+      List.map 
+      (fun (v, k) -> if v = x then (v, add_worlds k w) else (v, k)) k_st
+  | (sigma, var_sigma, k_st, AddAccessToKripke (x, (w1, w2))) ->
+      sigma, var_sigma,
+      List.map 
+      (fun (v, k) -> if v = x then (v, add_accessibility k (w1, w2)) else (v, k)) k_st
+  | (sigma, var_sigma, k_st, AddValuationToKripke (x, (p, w))) ->
+      sigma, var_sigma,
+      List.map (fun (v, k) -> if v = x then (v, add_valuation k p w) else (v, k)) k_st
+  | (sigma, var_sigma, k_st, AssignMexp (x, GetTruthValueFromKripke (v, (w, m)))) ->
+      failwith "unimpl"
+      
