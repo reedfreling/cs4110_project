@@ -63,7 +63,7 @@ kb : VAR VAR GETTRUTH m { GetTruthValueFromKripke(snd $1, (snd $2, $4)) }
 /* Modal logic expressions */
 m : SQUARE m              { Square($2) }
   | DIAMOND m             { Diamond($2) }
-  | BEXP b                { Bexp($2) }
+  | b                     { Bexp($1) }
 
 /* Kripke Commands */
 kc : CREATEKRIPKE VAR     { CreateEmptyKripke(snd $2) }

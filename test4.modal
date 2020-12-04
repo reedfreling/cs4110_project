@@ -8,4 +8,4 @@ k add valuation w1 c;
 k add valuation w2 b;
 v1 := k w1 ||- a;
 v2 := k w1 ||- (a and b);
-v3 := k w1 ||- (a and c);
+v3 := k w1 ||- (a and c)
