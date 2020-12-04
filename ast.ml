@@ -21,3 +21,9 @@ and com =
 | Seq of com * com
 | Print of bexp
 | Intro of var
+
+(* Modal logic expressions *)
+and mexp = 
+| Bexp of bexp
+| Square of mexp
+| Diamond of mexp
