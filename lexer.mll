@@ -55,7 +55,9 @@ rule token = parse
 | "<->"   { IFF(info lexbuf) }
 | "print" { PRINT(info lexbuf) }
 | "intro" { INTRO(info lexbuf) }
-| "truth valuation" { GETTRUTH(info lexbuf) }
+| "|_|"   { SQUARE(info lexbuf) } 
+| "<>"    { DIAMOND(info lexbuf) }
+| "||-" { GETTRUTH(info lexbuf) }
 | "create" { CREATEKRIPKE(info lexbuf) }
 | "add world" { ADDWORLD(info lexbuf) }
 | "add accessibility" { ADDACCESS(info lexbuf) }
