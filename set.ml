@@ -5,6 +5,9 @@ let empty = []
 let add_elt lst elt =
   if List.mem elt lst then lst else elt::lst
 
+let singleton w = 
+  add_elt empty w
+
 let union lst1 lst2 =
   List.fold_left (fun acc elt -> if List.mem elt acc then acc else elt::acc) lst1 lst2
 
