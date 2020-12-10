@@ -37,6 +37,7 @@ let digit = ['-']?['0'-'9']
 let id = ['a'-'z'] ['a'-'z' '0'-'9']*
 let ws = [' ' '\t']
 let s = ['{'] ([' ']* id [' ']* [','])* [' ']* id [' ']* ['}']
+let pset = ['{'] ([' ']* ['('] [' ']* id [' ']* [','] [' ']* id [' ']* [')'] [' ']* [';'])* [' ']* ['('] [' ']* id [' ']* [','] [' ']* id [' ']* [')'] [' ']* ['}']
 
 rule token = parse
 | ws      { token lexbuf }
@@ -44,6 +45,7 @@ rule token = parse
 | "("     { LPAREN(info lexbuf) }
 | ")"     { RPAREN(info lexbuf) }
 | s as l  { SET(info lexbuf, l) }
+| pset as l { PAIRSET(info lexbuf, l) }
 | "{"     { LBRACE(info lexbuf) }
 | "}"     { RBRACE(info lexbuf) }
 | ";"     { SEMI(info lexbuf) }
@@ -65,6 +67,7 @@ rule token = parse
 | "add world" { ADDWORLD(info lexbuf) }
 | "add worlds" { ADDWORLDS(info lexbuf) }
 | "add accessibility" { ADDACCESS(info lexbuf) }
+| "add accessibilities" { ADDACCESSES(info lexbuf) }
 | "add valuation" { ADDVALUE(info lexbuf) }
 | "add valuations" { ADDVALUES(info lexbuf) }
 | id as v { VAR(info lexbuf, v) }

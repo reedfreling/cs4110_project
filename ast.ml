@@ -29,6 +29,7 @@ and com =
 | AddWorldToKripke of (var * world)
 | AddWorldsToKripke of (var * world)
 | AddAccessToKripke of (var * (world * world))
+| AddAccessesToKripke of (var * (world))
 | AddValuationToKripke of (var * (var * world))
 | AddValuationsToKripke of (var * (var * world))
 

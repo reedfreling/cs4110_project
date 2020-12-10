@@ -54,6 +54,9 @@ let rec beval (sigma : store) (var_sigma : var_store) (b : bexp) : bexp =
   | Unknown (x, b) -> 
     if List.exists (fun (x', b') -> x' = x) sigma then beval sigma var_sigma b else Unknown (x, b)
 
+let print_list l = 
+  print_string "["; List.iter (fun x -> print_string x; print_string "; ") l; print_string "]"
+
 let parse_set (s : string) =
   let variables = String.trim s in
   let variables = String.map (fun c -> if c = '{' || c = '}' then ',' else c) variables in
@@ -61,8 +64,20 @@ let parse_set (s : string) =
   let variables = List.map (String.trim) variables in
   variables
 
-let print_list l = 
-  List.iter (fun x -> print_string x; print_string " ") l
+let parse_pair p = 
+    let pair = String.map (fun c -> if c = '(' || c = ')' then ',' else c) p in
+    let pair = String.split_on_char ',' pair in 
+    let pair = List.map (String.trim) pair in
+    let pair = List.filter (fun x -> not (String.length x = 0)) pair in
+      (List.hd pair, List.hd (List.tl pair))
+
+let parse_pair_set (s : string) = 
+  let pairs = String.trim s in
+  let pairs = String.map (fun c -> if c = '{' || c = '}' then ';' else c) pairs in
+  let pairs = String.split_on_char ';' pairs in
+  let pairs = List.filter (fun x -> not (String.length x = 0)) pairs in
+  let pairs = List.map (String.trim) pairs in
+  List.map (parse_pair) pairs
 
 (* Evaluate a command. *)
 let rec evalc (conf:configuration) : (store * var_store * kripke_store) =
@@ -107,6 +122,14 @@ let rec evalc (conf:configuration) : (store * var_store * kripke_store) =
       sigma, var_sigma,
       List.map 
       (fun (v, k) -> if v = x then (v, add_accessibility k (w1, w2)) else (v, k)) k_st
+    else
+      raise (UnboundedKripkeModel x)
+  | (sigma, var_sigma, k_st, AddAccessesToKripke (x, world_pairs)) ->
+    let pairs = parse_pair_set world_pairs in
+    if List.exists (fun (v, _) -> v = x) k_st then
+      sigma, var_sigma,
+      List.map 
+      (fun (v, k) -> if v = x then (v, add_accessibilities k pairs) else (v, k)) k_st
     else
       raise (UnboundedKripkeModel x)
   | (sigma, var_sigma, k_st, AddValuationToKripke (x, (p, w))) ->

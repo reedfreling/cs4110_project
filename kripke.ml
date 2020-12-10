@@ -23,6 +23,9 @@ let add_accessibility (k : kripke) (world_pair : world * world) =
   match k with
   | (w, r, v) -> (w, world_pair::r, v)
 
+let add_accessibilities (k : kripke) (world_pairs : (world * world) list) =
+  List.fold_left (fun acc elt -> add_accessibility acc elt) k world_pairs 
+
 let add_valuation (k : kripke) (x : var) (w : world) =
   let w_set = [w] in
   match k with

@@ -1,7 +1,7 @@
 intro a; intro b; intro c;
 create k;
 k add worlds { w1, w2 };
-k add accessibility w1 w2;
+k add accessibilities { (w1, w2) };
 k add valuations w1 { a ,c };
 k add valuation w2 b;
 intros {v1, v2, v3, v4, v5};

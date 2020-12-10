@@ -6,7 +6,7 @@ open Lexing
 let merge (fn,pos1,_) (_,_,pos2) = (fn,pos1,pos2)
 %}
 
-%token <Ast.info * string> VAR SET
+%token <Ast.info * string> VAR SET PAIRSET
 %token <Ast.info>
   LPAREN RPAREN TRUE FALSE
   NOT AND OR
@@ -15,7 +15,7 @@ let merge (fn,pos1,_) (_,_,pos2) = (fn,pos1,pos2)
   ASSIGN SEMI PRINT
   INTRO INTROS
   GETTRUTH CREATEKRIPKE ADDWORLD ADDACCESS ADDVALUE 
-  ADDWORLDS ADDVALUES
+  ADDWORLDS ADDACCESSES ADDVALUES
   BEXP SQUARE DIAMOND
 %token EOF
 
@@ -71,6 +71,7 @@ m : SQUARE m              { Square($2) }
 kc : CREATEKRIPKE VAR     { CreateEmptyKripke(snd $2) }
   | VAR ADDWORLD VAR      { AddWorldToKripke(snd $1, snd $3) }
   | VAR ADDACCESS VAR VAR { AddAccessToKripke(snd $1, (snd $3, snd $4)) }
+  | VAR ADDACCESSES PAIRSET { AddAccessesToKripke(snd $1, snd $3) }
   | VAR ADDVALUE VAR VAR  { AddValuationToKripke(snd $1, (snd $4, snd $3)) }
   | VAR ADDWORLDS SET     { AddWorldsToKripke(snd $1, snd $3) }
   | VAR ADDVALUES VAR SET { AddValuationsToKripke(snd $1, (snd $4, snd $3)) }
