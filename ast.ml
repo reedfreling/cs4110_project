@@ -26,6 +26,7 @@ and com =
 | Intro of var
 | CreateEmptyKripke of var
 | AddWorldToKripke of (var * world)
+| AddWorldsToKripke of (var * world)
 | AddAccessToKripke of (var * (world * world))
 | AddValuationToKripke of (var * (var * world))
 

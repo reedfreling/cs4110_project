@@ -78,9 +78,20 @@ let rec evalc (conf:configuration) : (store * var_store * kripke_store) =
     if List.exists (fun (v, _) -> v = x) k_st then
       sigma, var_sigma, 
       List.map 
-      (fun (v, k) -> if v = x then (v, add_worlds k w) else (v, k)) k_st
+      (fun (v, k) -> if v = x then (v, add_worlds k [w]) else (v, k)) k_st
     else 
       raise (UnboundedKripkeModel x)
+  | (sigma, var_sigma, k_st, AddWorldsToKripke (x, w)) ->
+    let variables = String.trim w in
+    let variables = String.map (fun c -> if c = '{' || c = '}' then ',' else c) variables in
+    let variables = String.split_on_char ',' variables in
+    let variables = List.map (String.trim) variables in
+      if List.exists (fun (v, _) -> v = x) k_st then
+        sigma, var_sigma, 
+        List.map 
+        (fun (v, k) -> if v = x then (v, add_worlds k variables) else (v, k)) k_st
+      else 
+        raise (UnboundedKripkeModel x)
   | (sigma, var_sigma, k_st, AddAccessToKripke (x, (w1, w2))) ->
     if List.exists (fun (v, _) -> v = x) k_st then
       sigma, var_sigma,

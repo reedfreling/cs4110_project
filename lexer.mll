@@ -36,12 +36,14 @@ let error lexbuf msg =
 let digit = ['-']?['0'-'9']
 let id = ['a'-'z'] ['a'-'z' '0'-'9']*
 let ws = [' ' '\t']
+let s = ['{'] ([' ']* id [' ']* [','])* [' ']* id [' ']* ['}']
 
 rule token = parse
 | ws      { token lexbuf }
 | '\n'    { newline lexbuf; token lexbuf }
 | "("     { LPAREN(info lexbuf) }
 | ")"     { RPAREN(info lexbuf) }
+| s as l  { WORLDS(info lexbuf, l) }
 | "{"     { LBRACE(info lexbuf) }
 | "}"     { RBRACE(info lexbuf) }
 | ";"     { SEMI(info lexbuf) }
@@ -60,6 +62,7 @@ rule token = parse
 | "||-"   { GETTRUTH(info lexbuf) }
 | "create" { CREATEKRIPKE(info lexbuf) }
 | "add world" { ADDWORLD(info lexbuf) }
+| "add worlds" { ADDWORLDS(info lexbuf) }
 | "add accessibility" { ADDACCESS(info lexbuf) }
 | "add valuation" { ADDVALUE(info lexbuf) }
 | id as v { VAR(info lexbuf, v) }

@@ -15,9 +15,9 @@ let list_union l1 l2 = List.fold_left (fun acc elt -> if List.mem elt acc then a
 (* start off with empty model *)
 let empty = ([], [], [])
 
-let add_worlds (k : kripke) (w : world) =
+let add_worlds (k : kripke) (w : world list) =
   match k with
-  | (worlds, r, v) -> ((list_union [w] worlds), r, v)
+  | (worlds, r, v) -> ((list_union w worlds), r, v)
 
 let add_accessibility (k : kripke) (world_pair : world * world) =
   match k with
