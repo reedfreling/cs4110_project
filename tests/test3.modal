@@ -1,0 +1,11 @@
+intro a; intro b; intro c;
+c := a -> b;
+print c;
+a := true;
+b := false;
+print c;
+b := true;
+print c;
+intro d;
+b := d;
+print c
