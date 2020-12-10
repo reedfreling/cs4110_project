@@ -155,3 +155,47 @@ let eval_mexp (m : kripke) (w : world) (e : mexp) : bexp =
     | True -> True
     | False -> False
     | _ -> failwith "e could not be evaluated to T/F"
+
+let produce_latex_node (world : world) =
+  String.concat "" ["\\node[world] "; "("; world; ") {$"; world; "$};"]
+
+let produce_latex_nodes (worlds : world list) =
+  List.fold_left (fun acc elt -> String.concat "" [acc; "\n"; produce_latex_node elt]) "" worlds
+
+let produce_latex_edge (edge : world * world) =
+  match edge with
+  | w1, w2 ->
+    String.concat "" ["\\path[->]("; w1; ") "; "edge ("; w2; ");"]
+
+let produce_latex_edges (r : access_relation) = 
+  List.fold_right (fun elt acc -> String.concat "" [acc; "\n"; produce_latex_edge elt]) r ""
+
+let produce_latex_string (m : kripke) =
+  match m with
+  | (worlds, r, v) -> String.concat "\n" [produce_latex_nodes worlds; produce_latex_edges r]
+
+let produce_latex_document (m : kripke) =
+  String.concat ""
+ ["\\documentclass[12pt]{article}\n"; "\\usepackage{tikz}\n"; 
+  "\\usetikzlibrary{positioning,arrows,calc}\n";
+  "\\tikzset{
+  modal/.style={>=stealth,shorten >=1pt,shorten <=1pt,auto,node distance=1.5cm,
+  semithick},
+  world/.style={circle,draw,minimum size=0.5cm,fill=gray!15},
+  point/.style={circle,draw,inner sep=0.5mm,fill=black},
+  reflexive above/.style={->,loop,looseness=7,in=120,out=60},
+  reflexive below/.style={->,loop,looseness=7,in=240,out=300},
+  reflexive left/.style={->,loop,looseness=7,in=150,out=210},
+  reflexive right/.style={->,loop,looseness=7,in=30,out=330}
+  }\n";
+  "\\begin{document}";
+  "\\begin{center}\n"; "\\begin{tikzpicture}[modal]\n"; produce_latex_string m; "\n"; 
+  "\n\\end{tikzpicture}\n\\end{center}\n";
+  "\\end{document}"]
+
+let latex_kripke (m : kripke) = 
+  let oc = open_out "filename.txt" in
+  Printf.fprintf oc "%s" (produce_latex_document m);
+  close_out oc 
+ 
+  

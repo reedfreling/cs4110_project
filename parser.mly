@@ -17,6 +17,7 @@ let merge (fn,pos1,_) (_,_,pos2) = (fn,pos1,pos2)
   GETTRUTH CREATEKRIPKE ADDWORLD ADDACCESS ADDVALUE 
   ADDWORLDS ADDACCESSES ADDVALUES
   BEXP SQUARE DIAMOND
+  LATEXIT
 %token EOF
 
 %type <Ast.bexp> b
@@ -75,6 +76,7 @@ kc : CREATEKRIPKE VAR     { CreateEmptyKripke(snd $2) }
   | VAR ADDVALUE VAR VAR  { AddValuationToKripke(snd $1, (snd $4, snd $3)) }
   | VAR ADDWORLDS SET     { AddWorldsToKripke(snd $1, snd $3) }
   | VAR ADDVALUES VAR SET { AddValuationsToKripke(snd $1, (snd $4, snd $3)) }
+  | LATEXIT VAR           { LatexIt(snd $2) }
 
 /* Programs */
 p : c EOF                 { $1 }

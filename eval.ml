@@ -62,7 +62,8 @@ let parse_set (s : string) =
   let variables = String.map (fun c -> if c = '{' || c = '}' then ',' else c) variables in
   let variables = String.split_on_char ',' variables in
   let variables = List.map (String.trim) variables in
-  variables
+  let variables = List.filter (fun x -> not (String.length x = 0)) variables in
+    variables
 
 let parse_pair p = 
     let pair = String.map (fun c -> if c = '(' || c = ')' then ',' else c) p in
@@ -151,5 +152,11 @@ let rec evalc (conf:configuration) : (store * var_store * kripke_store) =
         (x, eval_mexp (List.assoc v k_st) w m)::sigma, var_sigma, k_st
       else
         raise (UnboundVariable x)
+    else
+      raise (UnboundedKripkeModel x)
+  | (sigma, var_sigma, k_st, LatexIt x) ->
+    if List.exists (fun (v, _) -> v = x) k_st then begin
+      latex_kripke (snd (List.find (fun (v, _) -> v = x) k_st));
+      (sigma, var_sigma, k_st) end
     else
       raise (UnboundedKripkeModel x)

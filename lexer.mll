@@ -70,6 +70,7 @@ rule token = parse
 | "add accessibilities" { ADDACCESSES(info lexbuf) }
 | "add valuation" { ADDVALUE(info lexbuf) }
 | "add valuations" { ADDVALUES(info lexbuf) }
+| "latexit" { LATEXIT(info lexbuf) }
 | id as v { VAR(info lexbuf, v) }
 | eof     { EOF }
 | _ as c  { error lexbuf (String.make 1 c) }
