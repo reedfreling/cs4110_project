@@ -56,6 +56,7 @@ rule token = parse
 | "->"    { IMPLIES(info lexbuf) }
 | "<->"   { IFF(info lexbuf) }
 | "print" { PRINT(info lexbuf) }
+| "intros"{ INTROS(info lexbuf) }
 | "intro" { INTRO(info lexbuf) }
 | "[]"    { SQUARE(info lexbuf) } 
 | "<>"    { DIAMOND(info lexbuf) }

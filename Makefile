@@ -1,6 +1,5 @@
 MAIN := modal
 OBJS := kripke.cmo ast.cmo lexer.cmo parser.cmo pprint.cmo eval.cmo main.cmo
-PKGS=str
 
 %.cmo: %.ml
 	ocamlc -c $<

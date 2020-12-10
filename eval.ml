@@ -82,6 +82,9 @@ let rec evalc (conf:configuration) : (store * var_store * kripke_store) =
                         print_string "\n"; 
                         sigma, var_sigma, k_st
   | (sigma, var_sigma, k_st, Intro x) -> sigma, x::var_sigma, k_st
+  | (sigma, var_sigma, k_st, Intros x) -> 
+    let variables = parse_set x in
+      sigma, variables @ var_sigma, k_st
   | (sigma, var_sigma, k_st, CreateEmptyKripke x) ->
       sigma, var_sigma, (x, empty)::k_st
   | (sigma, var_sigma, k_st, AddWorldToKripke (x, w)) ->

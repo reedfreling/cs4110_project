@@ -13,7 +13,7 @@ let merge (fn,pos1,_) (_,_,pos2) = (fn,pos1,pos2)
   LBRACE RBRACE
   IMPLIES IFF 
   ASSIGN SEMI PRINT
-  INTRO 
+  INTRO INTROS
   GETTRUTH CREATEKRIPKE ADDWORLD ADDACCESS ADDVALUE 
   ADDWORLDS ADDVALUES
   BEXP SQUARE DIAMOND
@@ -54,6 +54,7 @@ c : ac SEMI c             { Seq($1, $3) }
 ac: VAR ASSIGN b          { Assign(snd $1, $3) }
   | VAR ASSIGN kb         { AssignMexp(snd $1, $3) }
   | INTRO VAR             { Intro (snd $2) }
+  | INTROS SET            { Intros (snd $2) }
   | LBRACE c RBRACE       { $2 }
   | PRINT b               { Print $2 }
   | kc                    { $1 }

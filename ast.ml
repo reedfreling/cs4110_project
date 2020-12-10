@@ -24,6 +24,7 @@ and com =
 | Seq of com * com
 | Print of bexp
 | Intro of var
+| Intros of var
 | CreateEmptyKripke of var
 | AddWorldToKripke of (var * world)
 | AddWorldsToKripke of (var * world)
