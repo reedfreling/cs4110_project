@@ -34,6 +34,9 @@ let add_valuation (k : kripke) (x : var) (w : world) =
       | Some curr_val -> (worlds, r, (x, list_union w_set curr_val)::(List.remove_assoc x v))
     )
 
+let add_valuations (k : kripke) (x : var list) (w : world) =
+  List.fold_left (fun acc elt -> add_valuation acc elt w) k x
+
 (* check if w2 is accessible from w1 *)
 let rec check_accessibility (m : kripke) (w1 : world) (w2 : world) = 
   match m with

@@ -43,7 +43,7 @@ rule token = parse
 | '\n'    { newline lexbuf; token lexbuf }
 | "("     { LPAREN(info lexbuf) }
 | ")"     { RPAREN(info lexbuf) }
-| s as l  { WORLDS(info lexbuf, l) }
+| s as l  { SET(info lexbuf, l) }
 | "{"     { LBRACE(info lexbuf) }
 | "}"     { RBRACE(info lexbuf) }
 | ";"     { SEMI(info lexbuf) }
@@ -65,6 +65,7 @@ rule token = parse
 | "add worlds" { ADDWORLDS(info lexbuf) }
 | "add accessibility" { ADDACCESS(info lexbuf) }
 | "add valuation" { ADDVALUE(info lexbuf) }
+| "add valuations" { ADDVALUES(info lexbuf) }
 | id as v { VAR(info lexbuf, v) }
 | eof     { EOF }
 | _ as c  { error lexbuf (String.make 1 c) }

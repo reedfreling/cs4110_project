@@ -29,6 +29,7 @@ and com =
 | AddWorldsToKripke of (var * world)
 | AddAccessToKripke of (var * (world * world))
 | AddValuationToKripke of (var * (var * world))
+| AddValuationsToKripke of (var * (var * world))
 
 (* Modal logic expressions *)
 and mexp = 

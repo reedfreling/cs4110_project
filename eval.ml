@@ -54,6 +54,16 @@ let rec beval (sigma : store) (var_sigma : var_store) (b : bexp) : bexp =
   | Unknown (x, b) -> 
     if List.exists (fun (x', b') -> x' = x) sigma then beval sigma var_sigma b else Unknown (x, b)
 
+let parse_set (s : string) =
+  let variables = String.trim s in
+  let variables = String.map (fun c -> if c = '{' || c = '}' then ',' else c) variables in
+  let variables = String.split_on_char ',' variables in
+  let variables = List.map (String.trim) variables in
+  variables
+
+let print_list l = 
+  List.iter (fun x -> print_string x; print_string " ") l
+
 (* Evaluate a command. *)
 let rec evalc (conf:configuration) : (store * var_store * kripke_store) =
   match conf with
@@ -82,10 +92,7 @@ let rec evalc (conf:configuration) : (store * var_store * kripke_store) =
     else 
       raise (UnboundedKripkeModel x)
   | (sigma, var_sigma, k_st, AddWorldsToKripke (x, w)) ->
-    let variables = String.trim w in
-    let variables = String.map (fun c -> if c = '{' || c = '}' then ',' else c) variables in
-    let variables = String.split_on_char ',' variables in
-    let variables = List.map (String.trim) variables in
+    let variables = parse_set w in
       if List.exists (fun (v, _) -> v = x) k_st then
         sigma, var_sigma, 
         List.map 
@@ -105,6 +112,13 @@ let rec evalc (conf:configuration) : (store * var_store * kripke_store) =
       List.map (fun (v, k) -> if v = x then (v, add_valuation k p w) else (v, k)) k_st
     else
       raise (UnboundedKripkeModel x)
+  | (sigma, var_sigma, k_st, AddValuationsToKripke (x, (p, w))) ->
+    let variables = parse_set p in
+      if List.exists (fun (v, _) -> v = x) k_st then
+        sigma, var_sigma,
+        List.map (fun (v, k) -> if v = x then (v, add_valuations k variables w) else (v, k)) k_st
+      else
+        raise (UnboundedKripkeModel x)
   | (sigma, var_sigma, k_st, AssignMexp (x, GetTruthValueFromKripke (v, (w, m)))) ->
     if List.exists (fun (v', _) -> v' = v) k_st then 
       if List.mem x var_sigma then
