@@ -1,7 +1,7 @@
 intro a; intro b; intro c;
 create k;
-k add worlds { w1, w2 };
-k add accessibilities { (w1, w2) };
+k add worlds { w1, w2, w3, w4, w5, w6 };
+k add accessibilities { (w1, w2); (w2, w1); (w2, w4); (w4, w3); (w6, w1); (w1, w6); (w3, w6) };
 k add valuations w1 { a ,c };
 k add valuation w2 b;
-latexit k
+latexit k mymodel.txt

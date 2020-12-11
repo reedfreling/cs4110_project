@@ -27,19 +27,14 @@
 \node[world] (w4) [xshift=5cm,yshift=-5cm] {$w4$};
 \node[world] (w5) [xshift=0cm,yshift=-10cm] {$w5$};
 \node[world] (w6) [xshift=5cm,yshift=-10cm] {$w6$};
-\node[world] (w7) [xshift=0cm,yshift=-15cm] {$w7$};
-\node[world] (w8) [xshift=5cm,yshift=-15cm] {$w8$};
 
 \path[->](w1) edge[bend left] (w2);
-\path[->](w3) edge[bend left] (w4);
+\path[->](w2) edge[bend left] (w1);
 \path[->](w2) edge[bend left] (w4);
-\path[->](w4) edge[bend left] (w2);
 \path[->](w4) edge[bend left] (w3);
-\path[->](w5) edge[bend left] (w1);
-\path[->](w6) edge[bend left] (w3);
-\path[->](w6) edge[bend left] (w3);
-\path[->](w8) edge[bend left] (w1);
-\path[->](w1) edge[bend left] (w8);
+\path[->](w6) edge[bend left] (w1);
+\path[->](w1) edge[bend left] (w6);
+\path[->](w3) edge[bend left] (w6);
 
 \end{tikzpicture}\end{center}
 
