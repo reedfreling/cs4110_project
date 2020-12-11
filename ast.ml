@@ -16,6 +16,8 @@ and bexp =
 | Or of bexp * bexp
 | Var of var
 | Unknown of var * bexp
+| Square of bexp
+| Diamond of bexp
 
 (* Commands. *)
 and com =
@@ -35,10 +37,10 @@ and com =
 | LatexIt of (var * var)
 
 (* Modal logic expressions *)
-and mexp = 
+(* and mexp = 
 | Bexp of bexp
 | Square of mexp
-| Diamond of mexp
+| Diamond of mexp *)
 
 and kripke_bexp =
-| GetTruthValueFromKripke of (var * (world * mexp))
+| GetTruthValueFromKripke of (var * (world * bexp))

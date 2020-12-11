@@ -10,19 +10,18 @@ let merge (fn,pos1,_) (_,_,pos2) = (fn,pos1,pos2)
 %token <Ast.info>
   LPAREN RPAREN TRUE FALSE
   NOT AND OR
+  SQUARE DIAMOND
   LBRACE RBRACE
   IMPLIES IFF 
   ASSIGN SEMI PRINT
   INTRO INTROS
   GETTRUTH CREATEKRIPKE ADDWORLD ADDACCESS ADDVALUE 
   ADDWORLDS ADDACCESSES ADDVALUES
-  BEXP SQUARE DIAMOND
   LATEXIT
 %token EOF
 
 %type <Ast.bexp> b
 %type <Ast.com> c
-%type <Ast.mexp> m
 %type <Ast.kripke_bexp> kb
 %type <Ast.com> p
 
@@ -47,6 +46,10 @@ ab : TRUE                 { True }
    | FALSE                { False }
    | LPAREN b RPAREN      { $2 }
    | VAR                  { Var(snd $1) }
+   | mb                   { $1 }
+
+mb: SQUARE b              { Square($2) }
+  | DIAMOND b             { Diamond($2) }
 
 /* Commands */
 c : ac SEMI c             { Seq($1, $3) }
@@ -61,12 +64,7 @@ ac: VAR ASSIGN b          { Assign(snd $1, $3) }
   | kc                    { $1 }
 
 /* kripke boolean expressions */
-kb : VAR VAR GETTRUTH m { GetTruthValueFromKripke(snd $1, (snd $2, $4)) }
-
-/* Modal logic expressions */
-m : SQUARE m              { Square($2) }
-  | DIAMOND m             { Diamond($2) }
-  | b                     { Bexp($1) }
+kb : VAR VAR GETTRUTH b { GetTruthValueFromKripke(snd $1, (snd $2, $4)) }
 
 /* Kripke Commands */
 kc : CREATEKRIPKE VAR     { CreateEmptyKripke(snd $2) }

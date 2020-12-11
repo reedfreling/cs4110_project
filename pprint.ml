@@ -16,6 +16,7 @@ and strBexp e = match e with
   | Or(b1, b2) -> sp "(%s or %s)" (strBexp b1) (strBexp b2)
   | Var x -> x
   | Unknown (x, b) -> strBexp b
+  | _ -> failwith "printing modal expressions not supported right now"
 and strCom(n, c) =
   match c with
   | Assign(x, b) -> sp "%s%s := %s" (space n) x (strBexp b)

@@ -53,6 +53,7 @@ let rec beval (sigma : store) (var_sigma : var_store) (b : bexp) : bexp =
   )
   | Unknown (x, b) -> 
     if List.exists (fun (x', b') -> x' = x) sigma then beval sigma var_sigma b else Unknown (x, b)
+  | _ -> failwith "evaluation of modal expression in propositional context"
 
 let print_list l = 
   print_string "["; List.iter (fun x -> print_string x; print_string "; ") l; print_string "]"

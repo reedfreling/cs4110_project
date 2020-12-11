@@ -9,24 +9,30 @@ type access_relation = (world * world) list
  *)
 type valuation_function = (var * world list) list
 
+(* a kripke model is a set of worlds, an access relation, and a truth valuation function*)
 type kripke = (world list * access_relation * valuation_function)
 
+(* set union operation implemented for ocaml lists *)
 let list_union l1 l2 = List.fold_left (fun acc elt -> if List.mem elt acc then acc else elt::acc) l1 l2
 
 (* start off with empty model *)
 let empty = ([], [], [])
 
+(* add worlds in w to kripke model k *)
 let add_worlds (k : kripke) (w : world list) =
   match k with
   | (worlds, r, v) -> ((list_union w worlds), r, v)
 
+(* add single pair to the accessibility relation *)
 let add_accessibility (k : kripke) (world_pair : world * world) =
   match k with
   | (w, r, v) -> (w, world_pair::r, v)
 
+(* add list of pairs to the accessibility relation *)
 let add_accessibilities (k : kripke) (world_pairs : (world * world) list) =
   List.fold_left (fun acc elt -> add_accessibility acc elt) k world_pairs 
 
+(* set x to be true at w *)
 let add_valuation (k : kripke) (x : var) (w : world) =
   let w_set = [w] in
   match k with
@@ -38,6 +44,7 @@ let add_valuation (k : kripke) (x : var) (w : world) =
       | Some curr_val -> (worlds, r, (x, list_union w_set curr_val)::(List.remove_assoc x v))
     )
 
+(* set every variable in x to be true at w *)
 let add_valuations (k : kripke) (x : var list) (w : world) =
   List.fold_left (fun acc elt -> add_valuation acc elt w) k x
 
@@ -62,6 +69,7 @@ let rec accessible_worlds (m : kripke) (w : world) =
     else (accessible_worlds m' w)
   | ([], r, v) -> []
 
+(* reduce a boolean expression to true or false *)
 let rec eval_bexp (m : kripke) (w : world) (e : bexp) : bexp = 
   match e with
   | True -> True
@@ -87,34 +95,22 @@ let rec eval_bexp (m : kripke) (w : world) (e : bexp) : bexp =
       | None -> False
       )
     )
+  | Square e' -> 
+    let a_worlds = accessible_worlds m w in
+    true_at_all m a_worlds e'
+  | Diamond e' ->
+    let a_worlds = accessible_worlds m w in
+    true_at_some m a_worlds e'
   | Unknown (v, e') -> failwith "should be no unknowns"
 
-let rec check_valuation_at_world (m : kripke) (w : world) (e : mexp) : bexp = 
+and true_at_all (m : kripke) (worlds : world list) (e : bexp) =
   match e with
-  | Bexp e' -> 
-    eval_bexp m w e'
-  | Square e' -> 
-    let a_worlds = accessible_worlds m w in
-    let x = true_at_all m a_worlds e' in
-    print_string (strBexp x); x
-  | Diamond e' -> 
-    let a_worlds = accessible_worlds m w in
-    let x = true_at_some m a_worlds e' in
-    print_string (strBexp x); x
-and true_at_all (m : kripke) (worlds : world list) (e : mexp) =
-  match e with
-  | Bexp e' -> 
-    (
-      match worlds with
-      | w'::worlds' -> And ((check_valuation_at_world m w' e), (true_at_all m worlds' e))
-      | [] -> True
-    )
   | Square e' -> 
     (
       match worlds with
       | w'::worlds' -> 
         let a_worlds = accessible_worlds m w' in
-        And ((true_at_all m a_worlds e'), (true_at_all m worlds' e'))
+        And ((true_at_all m a_worlds e'), (true_at_all m worlds' e))
       | [] -> True
     )
   | Diamond e' -> 
@@ -122,23 +118,24 @@ and true_at_all (m : kripke) (worlds : world list) (e : mexp) =
       match worlds with
       | w'::worlds' -> 
         let a_worlds = accessible_worlds m w' in
-        And ((true_at_some m a_worlds e'), (true_at_all m worlds' e'))
+        And ((true_at_some m a_worlds e'), (true_at_all m worlds' e))
       | [] -> True
     )
-and true_at_some (m : kripke) (worlds : world list) (e : mexp) = 
+  | _ -> 
+  (
+    match worlds with
+    | w'::worlds' ->
+      And ((eval_bexp m w' e), (true_at_all m worlds' e))
+    | [] -> True
+  )
+and true_at_some (m : kripke) (worlds : world list) (e : bexp) = 
   match e with
-  | Bexp e' -> 
-    (
-      match worlds with
-      | w'::worlds' -> Or ((check_valuation_at_world m w' e), (true_at_some m worlds' e))
-      | [] -> False
-    )
   | Square e' -> 
     (
       match worlds with
       | w'::worlds' -> 
         let a_worlds = accessible_worlds m w' in
-        Or ((true_at_all m a_worlds e'), (true_at_some m worlds' e'))
+        Or ((true_at_all m a_worlds e'), (true_at_some m worlds' e))
       | [] -> False
     )
   | Diamond e' -> 
@@ -146,18 +143,27 @@ and true_at_some (m : kripke) (worlds : world list) (e : mexp) =
       match worlds with
       | w'::worlds' -> 
         let a_worlds = accessible_worlds m w' in
-        Or ((true_at_some m a_worlds e'), (true_at_some m worlds' e'))
+        Or ((true_at_some m a_worlds e'), (true_at_some m worlds' e))
+      | [] -> False
+    )
+  | _ -> 
+    (
+      match worlds with
+      | w'::worlds' -> 
+        Or ((eval_bexp m w' e), (true_at_some m worlds' e))
       | [] -> False
     )
 
-let eval_mexp (m : kripke) (w : world) (e : mexp) : bexp = 
+(* reduce a modal expression e to true or false *)
+let eval_mexp (m : kripke) (w : world) (e : bexp) : bexp = 
   match m with
   | (worlds, r, v) ->
-    let b = eval_bexp m w (check_valuation_at_world m w e) in
-    match b with
+    let b = eval_bexp m w e in
+    (* match b with
     | True -> True
     | False -> False
-    | _ -> failwith "e could not be evaluated to T/F"
+    | _ -> failwith "e could not be evaluated to T/F" *)
+    b
 
 let produce_latex_node (world : world) (pos : int * int) =
   String.concat "" ["\\node[world] "; "("; world; ") ["; 
@@ -240,7 +246,6 @@ let produce_latex_document (m : kripke) =
   valuation_truth_table m;
   "\\end{document}"]
   
-
 let latex_kripke (m : kripke) (file : string) = 
   let oc = open_out file in
   Printf.fprintf oc "%s" (produce_latex_document m);
