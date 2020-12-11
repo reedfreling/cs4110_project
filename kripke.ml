@@ -176,9 +176,46 @@ let produce_latex_edge (edge : world * world) =
 let produce_latex_edges (r : access_relation) = 
   List.fold_right (fun elt acc -> String.concat "\n" [acc; produce_latex_edge elt]) r ""
 
-let produce_latex_string (m : kripke) =
+let produce_latex_graph (m : kripke) =
   match m with
   | (worlds, r, v) -> String.concat "\n" [produce_latex_nodes worlds; produce_latex_edges r]
+
+let rec produce_repeated_list s i =
+  if i = 0 then [] else s::(produce_repeated_list s (i - 1))
+
+let valuation_truth_table_tabular i =
+  let begin_tabular = "\\begin{tabular}{ " in
+  let columns = produce_repeated_list "|c" (i + 1) in
+  String.concat "" [begin_tabular; String.concat "" columns; "| }"]
+
+let truth_table_variables (v : valuation_function) =
+  List.map (fun (k, v) -> k) v
+
+let valuation_truth_table_first_row (worlds : world list) = 
+  String.concat " & " (" "::worlds)
+
+let valuation_truth_table_row (worlds : world list) (v : valuation_function) (p : var) =
+  let p_worlds = List.assoc p v in
+  let valuations = List.map (fun w -> if List.mem w p_worlds then "t" else "f") worlds in
+  String.concat " & " (p::valuations)
+
+let valuation_truth_table_rows (worlds : world list) (v : valuation_function) =
+  let string_rows =
+    List.map (fun p -> valuation_truth_table_row worlds v p) (truth_table_variables v) in
+  String.concat " \\\\ \n" string_rows
+
+let valuation_truth_table (m : kripke) =
+  match m with
+  | (w, r, v) ->
+    String.concat "\n\n"
+    [
+      "\\begin{center}";
+      valuation_truth_table_tabular (List.length w); "\\hline";
+      String.concat "" (valuation_truth_table_first_row w::[" \\\\"]); "\\hline"; 
+      valuation_truth_table_rows w v; "\\\\ \\hline";
+      "\\end{tabular}";
+      "\\end{center}"
+    ]
 
 let produce_latex_document (m : kripke) =
   String.concat "\n\n"
@@ -195,9 +232,11 @@ let produce_latex_document (m : kripke) =
   reflexive right/.style={->,loop,looseness=7,in=30,out=330}
 }";
   "\\begin{document}";
-  "\\begin{center}"; "\\begin{tikzpicture}[modal]"; produce_latex_string m; 
+  "\\begin{center}"; "\\begin{tikzpicture}[modal]"; produce_latex_graph m; 
   "\\end{tikzpicture}"; "\\end{center}";
+  valuation_truth_table m;
   "\\end{document}"]
+  
 
 let latex_kripke (m : kripke) (file : string) = 
   let oc = open_out file in

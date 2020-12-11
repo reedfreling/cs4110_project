@@ -4,4 +4,7 @@ k add worlds { w1, w2, w3, w4, w5, w6 };
 k add accessibilities { (w1, w2); (w2, w1); (w2, w4); (w4, w3); (w6, w1); (w1, w6); (w3, w6) };
 k add valuations w1 { a ,c };
 k add valuation w2 b;
+k add valuations w3 {a,b};
+k add valuations w4 {c};
+k add valuations w5 {c, b};
 latexit k mymodel.txt
