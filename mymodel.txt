@@ -40,4 +40,24 @@
 
 \end{center}
 
+\begin{center}
+
+\begin{tabular}{ |c|c|c|c|c|c|c| }
+
+\hline
+
+  & w1 & w2 & w3 & w4 & w5 & w6 \\
+
+\hline
+
+b & f & t & t & f & t & f \\ 
+c & t & f & f & t & t & f \\ 
+a & t & f & t & f & f & f
+
+\\ \hline
+
+\end{tabular}
+
+\end{center}
+
 \end{document}
