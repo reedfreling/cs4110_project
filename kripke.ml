@@ -180,8 +180,10 @@ let produce_latex_nodes (worlds : world list) =
 let produce_latex_edge (edge : world * world) =
   match edge with
   | w1, w2 ->
-    String.concat "" ["\\path[->]("; w1; ") "; "edge[bend left] ("; w2; ");"]
-
+    if w1 <> w2 then
+      String.concat "" ["\\path[->]("; w1; ") "; "edge[bend left] ("; w2; ");"]
+    else 
+      String.concat "" ["\\path[->]("; w1; ") "; "edge[reflexive above] ("; w2; ");"]
 let produce_latex_edges (r : access_relation) = 
   List.fold_right (fun elt acc -> String.concat "\n" [acc; produce_latex_edge elt]) r ""
 
