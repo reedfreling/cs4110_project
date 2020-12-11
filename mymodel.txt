@@ -36,6 +36,8 @@
 \path[->](w1) edge[bend left] (w6);
 \path[->](w3) edge[bend left] (w6);
 
-\end{tikzpicture}\end{center}
+\end{tikzpicture}
+
+\end{center}
 
 \end{document}

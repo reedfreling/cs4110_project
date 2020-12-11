@@ -196,7 +196,7 @@ let produce_latex_document (m : kripke) =
 }";
   "\\begin{document}";
   "\\begin{center}"; "\\begin{tikzpicture}[modal]"; produce_latex_string m; 
-  "\\end{tikzpicture}\\end{center}";
+  "\\end{tikzpicture}"; "\\end{center}";
   "\\end{document}"]
 
 let latex_kripke (m : kripke) (file : string) = 
