@@ -1,4 +1,5 @@
 open Ast
+open Pprint
 
 (* (w1, w2) in W <=> w2 is accessible from w1 *)
 type access_relation = (world * world) list
@@ -94,10 +95,12 @@ let rec check_valuation_at_world (m : kripke) (w : world) (e : mexp) : bexp =
     eval_bexp m w e'
   | Square e' -> 
     let a_worlds = accessible_worlds m w in
-    true_at_all m a_worlds e'
+    let x = true_at_all m a_worlds e' in
+    print_string (strBexp x); x
   | Diamond e' -> 
     let a_worlds = accessible_worlds m w in
-    true_at_some m a_worlds e'
+    let x = true_at_some m a_worlds e' in
+    print_string (strBexp x); x
 and true_at_all (m : kripke) (worlds : world list) (e : mexp) =
   match e with
   | Bexp e' -> 
