@@ -1,0 +1,24 @@
+intro a; intro b; intro c;
+create k;
+k add worlds { w1, w2 };
+k add accessibilities { (w1, w2) };
+k add valuations w1 { a ,c };
+k add valuation w2 b;
+intros {v1, v2, v3, v4, v5};
+v1 := k w1 ||- a;
+v2 := k w1 ||- (a and b);
+v3 := k w1 ||- (a and c);
+v4 := k w2 ||- b;
+v5 := k w2 ||- (a -> b);
+print v1;
+print v2;
+print v3;
+print v4;
+print v5;
+v5 := k w2 ||- (b -> a);
+print v5;
+intro v6;
+v6 := k w1 ||- []a;
+print v6;
+v6 := k w1 ||- []b;
+print v6
