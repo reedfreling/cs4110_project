@@ -1,6 +1,9 @@
 \documentclass[12pt]{article}
+
 \usepackage{tikz}
+
 \usetikzlibrary{positioning,arrows,calc}
+
 \tikzset{
   modal/.style={>=stealth,shorten >=1pt,shorten <=1pt,auto,node distance=1.5cm,
   semithick},
@@ -10,15 +13,19 @@
   reflexive below/.style={->,loop,looseness=7,in=240,out=300},
   reflexive left/.style={->,loop,looseness=7,in=150,out=210},
   reflexive right/.style={->,loop,looseness=7,in=30,out=330}
-  }
-\begin{document}\begin{center}
+}
+
+\begin{document}
+
+\begin{center}
+
 \begin{tikzpicture}[modal]
 
-\node[world] (w1) {$w1$};
-\node[world] (w2) {$w2$};
+\node[world] (w1) [xshift=0cm,yshift=0cm] {$w1$};
+\node[world] (w2) [xshift=5cm,yshift=0cm] {$w2$};
 
-\path[->](w1) edge (w2);
+\path[->](w1) edge[bend left] (w2);
 
-\end{tikzpicture}
-\end{center}
+\end{tikzpicture}\end{center}
+
 \end{document}

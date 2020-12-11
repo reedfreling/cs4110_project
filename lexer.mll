@@ -38,6 +38,7 @@ let id = ['a'-'z'] ['a'-'z' '0'-'9']*
 let ws = [' ' '\t']
 let s = ['{'] ([' ']* id [' ']* [','])* [' ']* id [' ']* ['}']
 let pset = ['{'] ([' ']* ['('] [' ']* id [' ']* [','] [' ']* id [' ']* [')'] [' ']* [';'])* [' ']* ['('] [' ']* id [' ']* [','] [' ']* id [' ']* [')'] [' ']* ['}']
+let filename = id ['.']? id
 
 rule token = parse
 | ws      { token lexbuf }
@@ -72,5 +73,6 @@ rule token = parse
 | "add valuations" { ADDVALUES(info lexbuf) }
 | "latexit" { LATEXIT(info lexbuf) }
 | id as v { VAR(info lexbuf, v) }
+| filename as f { FILE(info lexbuf, f) }
 | eof     { EOF }
 | _ as c  { error lexbuf (String.make 1 c) }

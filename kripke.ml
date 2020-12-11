@@ -156,28 +156,34 @@ let eval_mexp (m : kripke) (w : world) (e : mexp) : bexp =
     | False -> False
     | _ -> failwith "e could not be evaluated to T/F"
 
-let produce_latex_node (world : world) =
-  String.concat "" ["\\node[world] "; "("; world; ") {$"; world; "$};"]
+let produce_latex_node (world : world) (pos : int * int) =
+  String.concat "" ["\\node[world] "; "("; world; ") ["; 
+    "xshift="; string_of_int (fst pos); "cm,"; 
+    "yshift="; string_of_int (snd pos); "cm] ";
+    "{$"; world; "$};"]
+
+let produce_position (i : int) =
+  if i mod 2 = 0 then (0, -(i/2)*5) else (5, -(i/2)*5)
 
 let produce_latex_nodes (worlds : world list) =
-  List.fold_left (fun acc elt -> String.concat "" [acc; "\n"; produce_latex_node elt]) "" worlds
+  String.concat "\n" (List.mapi (fun i elt -> produce_latex_node elt (produce_position i)) worlds)
 
 let produce_latex_edge (edge : world * world) =
   match edge with
   | w1, w2 ->
-    String.concat "" ["\\path[->]("; w1; ") "; "edge ("; w2; ");"]
+    String.concat "" ["\\path[->]("; w1; ") "; "edge[bend left] ("; w2; ");"]
 
 let produce_latex_edges (r : access_relation) = 
-  List.fold_right (fun elt acc -> String.concat "" [acc; "\n"; produce_latex_edge elt]) r ""
+  List.fold_right (fun elt acc -> String.concat "\n" [acc; produce_latex_edge elt]) r ""
 
 let produce_latex_string (m : kripke) =
   match m with
   | (worlds, r, v) -> String.concat "\n" [produce_latex_nodes worlds; produce_latex_edges r]
 
 let produce_latex_document (m : kripke) =
-  String.concat ""
- ["\\documentclass[12pt]{article}\n"; "\\usepackage{tikz}\n"; 
-  "\\usetikzlibrary{positioning,arrows,calc}\n";
+  String.concat "\n\n"
+ ["\\documentclass[12pt]{article}"; "\\usepackage{tikz}"; 
+  "\\usetikzlibrary{positioning,arrows,calc}";
   "\\tikzset{
   modal/.style={>=stealth,shorten >=1pt,shorten <=1pt,auto,node distance=1.5cm,
   semithick},
@@ -187,14 +193,14 @@ let produce_latex_document (m : kripke) =
   reflexive below/.style={->,loop,looseness=7,in=240,out=300},
   reflexive left/.style={->,loop,looseness=7,in=150,out=210},
   reflexive right/.style={->,loop,looseness=7,in=30,out=330}
-  }\n";
+}";
   "\\begin{document}";
-  "\\begin{center}\n"; "\\begin{tikzpicture}[modal]\n"; produce_latex_string m; "\n"; 
-  "\n\\end{tikzpicture}\n\\end{center}\n";
+  "\\begin{center}"; "\\begin{tikzpicture}[modal]"; produce_latex_string m; 
+  "\\end{tikzpicture}\\end{center}";
   "\\end{document}"]
 
-let latex_kripke (m : kripke) = 
-  let oc = open_out "filename.txt" in
+let latex_kripke (m : kripke) (file : string) = 
+  let oc = open_out file in
   Printf.fprintf oc "%s" (produce_latex_document m);
   close_out oc 
  

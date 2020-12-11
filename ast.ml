@@ -32,7 +32,7 @@ and com =
 | AddAccessesToKripke of (var * (world))
 | AddValuationToKripke of (var * (var * world))
 | AddValuationsToKripke of (var * (var * world))
-| LatexIt of var
+| LatexIt of (var * var)
 
 (* Modal logic expressions *)
 and mexp = 

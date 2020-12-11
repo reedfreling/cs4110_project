@@ -154,9 +154,9 @@ let rec evalc (conf:configuration) : (store * var_store * kripke_store) =
         raise (UnboundVariable x)
     else
       raise (UnboundedKripkeModel x)
-  | (sigma, var_sigma, k_st, LatexIt x) ->
+  | (sigma, var_sigma, k_st, LatexIt (x, f)) ->
     if List.exists (fun (v, _) -> v = x) k_st then begin
-      latex_kripke (snd (List.find (fun (v, _) -> v = x) k_st));
+      latex_kripke (snd (List.find (fun (v, _) -> v = x) k_st)) f;
       (sigma, var_sigma, k_st) end
     else
       raise (UnboundedKripkeModel x)

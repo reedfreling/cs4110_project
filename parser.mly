@@ -6,7 +6,7 @@ open Lexing
 let merge (fn,pos1,_) (_,_,pos2) = (fn,pos1,pos2)
 %}
 
-%token <Ast.info * string> VAR SET PAIRSET
+%token <Ast.info * string> VAR FILE SET PAIRSET
 %token <Ast.info>
   LPAREN RPAREN TRUE FALSE
   NOT AND OR
@@ -76,7 +76,7 @@ kc : CREATEKRIPKE VAR     { CreateEmptyKripke(snd $2) }
   | VAR ADDVALUE VAR VAR  { AddValuationToKripke(snd $1, (snd $4, snd $3)) }
   | VAR ADDWORLDS SET     { AddWorldsToKripke(snd $1, snd $3) }
   | VAR ADDVALUES VAR SET { AddValuationsToKripke(snd $1, (snd $4, snd $3)) }
-  | LATEXIT VAR           { LatexIt(snd $2) }
+  | LATEXIT VAR FILE          { LatexIt(snd $2, snd $3) }
 
 /* Programs */
 p : c EOF                 { $1 }
