@@ -32,15 +32,15 @@ let rec beval (sigma : store) (var_sigma : var_store) (b : bexp) : bexp =
   | False -> False
   | Not True -> False
   | Not False -> True
-  | Not (Unknown (x, b)) -> Unknown (x, Not b)
-  | Not b -> Not (beval sigma var_sigma b)
+  | Not (Unknown (x, b)) -> beval sigma var_sigma (Unknown (x, Not b))
+  | Not b -> beval sigma var_sigma (Not (beval sigma var_sigma b))
   | And (True, b) -> beval sigma var_sigma b
   | And (False, _) -> False
-  | And (Unknown (x, b1), b2) -> Unknown (x, And (b1, beval sigma var_sigma b2))
+  | And (Unknown (x, b1), b2) -> beval sigma var_sigma (Unknown (x, And (b1, beval sigma var_sigma b2)))
   | And (b1, b2) -> beval sigma var_sigma (And (beval sigma var_sigma b1, b2))
   | Or (True, _) -> True
   | Or (False, b) -> beval sigma var_sigma b
-  | Or (Unknown (x, b1), b2) -> Unknown (x, Or (b1, beval sigma var_sigma b2))
+  | Or (Unknown (x, b1), b2) -> beval sigma var_sigma (Unknown (x, Or (b1, beval sigma var_sigma b2)))
   | Or (b1, b2) -> beval sigma var_sigma (Or (beval sigma var_sigma b1, b2))
   | Implies (b1, b2) -> beval sigma var_sigma (Or (Not b1, b2))
   | Iff (b1, b2) -> beval sigma var_sigma (And (Implies(b1, b2), Implies(b2, b1)))

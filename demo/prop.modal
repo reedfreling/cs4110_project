@@ -1,0 +1,14 @@
+intro a;
+intros { b, c, d, e };
+
+c := a and b;
+d := !c;
+print c;
+print d;
+
+a := true;
+print c;
+print d;
+b := false;
+print c;
+print d
