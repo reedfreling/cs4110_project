@@ -35,4 +35,3 @@ v3 := m w3 ||- ([][]a) and b;
 print v3;
 v3 := m w3 ||- ([][]a) and b and <>b;
 print v3
-
