@@ -2,8 +2,8 @@ create m;
 m add world w1;
 m add worlds { w2, w3 };
 
-m add accessibility w1 w3;
-m add accessibilities { (w1, w1); (w1, w2); (w2, w2); (w2, w3); (w3, w2) };
+m add accessibility w1 w1;
+m add accessibilities { (w1, w2); (w2, w2); (w2, w3); (w3, w2) };
 
 intros { a, b };
 
@@ -34,4 +34,6 @@ print v3;
 v3 := m w3 ||- ([][]a) and b;
 print v3;
 v3 := m w3 ||- ([][]a) and b and <>b;
-print v3
+print v3;
+
+latexit m mymodel.txt

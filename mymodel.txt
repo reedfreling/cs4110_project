@@ -24,18 +24,12 @@
 \node[world] (w1) [xshift=0cm,yshift=0cm] {$w1$};
 \node[world] (w2) [xshift=5cm,yshift=0cm] {$w2$};
 \node[world] (w3) [xshift=0cm,yshift=-5cm] {$w3$};
-\node[world] (w4) [xshift=5cm,yshift=-5cm] {$w4$};
-\node[world] (w5) [xshift=0cm,yshift=-10cm] {$w5$};
-\node[world] (w6) [xshift=5cm,yshift=-10cm] {$w6$};
 
 \path[->](w1) edge[reflexive above] (w1);
 \path[->](w1) edge[bend left] (w2);
-\path[->](w2) edge[bend left] (w1);
-\path[->](w2) edge[bend left] (w4);
-\path[->](w4) edge[bend left] (w3);
-\path[->](w6) edge[bend left] (w1);
-\path[->](w1) edge[bend left] (w6);
-\path[->](w3) edge[bend left] (w6);
+\path[->](w2) edge[reflexive above] (w2);
+\path[->](w2) edge[bend left] (w3);
+\path[->](w3) edge[bend left] (w2);
 
 \end{tikzpicture}
 
@@ -43,17 +37,16 @@
 
 \begin{center}
 
-\begin{tabular}{ |c|c|c|c|c|c|c| }
+\begin{tabular}{ |c|c|c|c| }
 
 \hline
 
-  & w1 & w2 & w3 & w4 & w5 & w6 \\
+  & w1 & w2 & w3 \\
 
 \hline
 
-b & f & t & t & f & t & f \\ 
-c & t & f & f & t & t & f \\ 
-a & t & f & t & f & f & f
+b & f & f & t \\ 
+a & t & t & t
 
 \\ \hline
 
