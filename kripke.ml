@@ -69,7 +69,8 @@ let rec accessible_worlds (m : kripke) (w : world) =
     else (accessible_worlds m' w)
   | ([], r, v) -> []
 
-(* reduce a boolean expression to true or false *)
+(* get the value of a boolean expression with respect to a kripke 
+   model and a world *)
 let rec eval_bexp (m : kripke) (w : world) (e : bexp) : bexp = 
   match e with
   | True -> True
