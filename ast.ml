@@ -36,11 +36,5 @@ and com =
 | AddValuationsToKripke of (var * (var * world))
 | LatexIt of (var * var)
 
-(* Modal logic expressions *)
-(* and mexp = 
-| Bexp of bexp
-| Square of mexp
-| Diamond of mexp *)
-
 and kripke_bexp =
 | GetTruthValueFromKripke of (var * (world * bexp))
