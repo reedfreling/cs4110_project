@@ -165,15 +165,23 @@ let eval_mexp (m : kripke) (w : world) (e : bexp) : bexp =
     | _ -> failwith "e could not be evaluated to T/F" *)
     b
 
+
+(* Start latex production from kripke *)
+(* 
+  produced latex for kripke model according to guide
+  at https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&ved=2ahUKEwiO2pbCpMftAhXXKM0KHTaWAIcQFjAEegQIAxAC&url=http%3A%2F%2Fwww.actual.world%2Fresources%2Ftex%2Fdoc%2FTikZ.pdf&usg=AOvVaw1dG6z5Ak9IB7uJaOX0s4Sr
+*)
 let produce_latex_node (world : world) (pos : int * int) =
   String.concat "" ["\\node[world] "; "("; world; ") ["; 
     "xshift="; string_of_int (fst pos); "cm,"; 
     "yshift="; string_of_int (snd pos); "cm] ";
     "{$"; world; "$};"]
 
+(* gives position to nodes representing worlds in the picture produced *)
 let produce_position (i : int) =
   if i mod 2 = 0 then (0, -(i/2)*5) else (5, -(i/2)*5)
 
+(* give latex code to produce nodes in tikzpicture *)
 let produce_latex_nodes (worlds : world list) =
   String.concat "\n" (List.mapi (fun i elt -> produce_latex_node elt (produce_position i)) worlds)
 
@@ -184,24 +192,34 @@ let produce_latex_edge (edge : world * world) =
       String.concat "" ["\\path[->]("; w1; ") "; "edge[bend left] ("; w2; ");"]
     else 
       String.concat "" ["\\path[->]("; w1; ") "; "edge[reflexive above] ("; w2; ");"]
+
+(* give latex code to produce edges in tikzpicture *)
 let produce_latex_edges (r : access_relation) = 
   List.fold_right (fun elt acc -> String.concat "\n" [acc; produce_latex_edge elt]) r ""
 
+(* produce latex code to produce tikzpicture for kripke model *)
 let produce_latex_graph (m : kripke) =
   match m with
   | (worlds, r, v) -> String.concat "\n" [produce_latex_nodes worlds; produce_latex_edges r]
 
+
+
+(* below code produces truth table to go with kripke model tikzpicture *)
+
 let rec produce_repeated_list s i =
   if i = 0 then [] else s::(produce_repeated_list s (i - 1))
 
+(* get latex code to setup tabular environment *)
 let valuation_truth_table_tabular i =
   let begin_tabular = "\\begin{tabular}{ " in
   let columns = produce_repeated_list "|c" (i + 1) in
   String.concat "" [begin_tabular; String.concat "" columns; "| }"]
 
+(* get all propositional variables in the kripke model *)
 let truth_table_variables (v : valuation_function) =
   List.map (fun (k, v) -> k) v
 
+(* get latex code for first row of table that specifies the worlds *)
 let valuation_truth_table_first_row (worlds : world list) = 
   String.concat " & " (" "::worlds)
 
@@ -210,6 +228,7 @@ let valuation_truth_table_row (worlds : world list) (v : valuation_function) (p 
   let valuations = List.map (fun w -> if List.mem w p_worlds then "t" else "f") worlds in
   String.concat " & " (p::valuations)
 
+(* rows of propositional variables with valuation in different worlds *)
 let valuation_truth_table_rows (worlds : world list) (v : valuation_function) =
   let string_rows =
     List.map (fun p -> valuation_truth_table_row worlds v p) (truth_table_variables v) in
@@ -228,6 +247,10 @@ let valuation_truth_table (m : kripke) =
       "\\end{center}"
     ]
 
+(* 
+  get latex code for the entire document with kripke model graphic
+  and associated truth table
+*)
 let produce_latex_document (m : kripke) =
   String.concat "\n\n"
  ["\\documentclass[12pt]{article}"; "\\usepackage{tikz}"; 
@@ -248,6 +271,7 @@ let produce_latex_document (m : kripke) =
   valuation_truth_table m;
   "\\end{document}"]
   
+(* write latex code to file *)
 let latex_kripke (m : kripke) (file : string) = 
   let oc = open_out file in
   Printf.fprintf oc "%s" (produce_latex_document m);
