@@ -28,6 +28,7 @@
 \node[world] (w5) [xshift=0cm,yshift=-10cm] {$w5$};
 \node[world] (w6) [xshift=5cm,yshift=-10cm] {$w6$};
 
+\path[->](w1) edge[reflexive above] (w1);
 \path[->](w1) edge[bend left] (w2);
 \path[->](w2) edge[bend left] (w1);
 \path[->](w2) edge[bend left] (w4);
