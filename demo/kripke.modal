@@ -1,0 +1,38 @@
+create m;
+m add world w1;
+m add worlds { w2, w3 };
+
+m add accessibility w1 w3;
+m add accessibilities { (w1, w1); (w1, w2); (w2, w2); (w2, w3); (w3, w2) };
+
+intros { a, b };
+
+m add valuation w1 a;
+m add valuation w2 a;
+m add valuations w3 { a, b };
+
+intros { v1, v2 };
+
+v1 := m w1 ||- (a and b);
+v2 := m w1 ||- (a or b);
+print v1;
+print v2;
+
+v1 := m w2 ||- []b;
+v2 := m w2 ||- <>b;
+print v1;
+print v2;
+
+v1 := m w2 ||- [][]a;
+v2 := m w2 ||- <><>b;
+print v1;
+print v2;
+
+intro v3;
+v3 := m w3 ||- []a;
+print v3;
+v3 := m w3 ||- ([][]a) and b;
+print v3;
+v3 := m w3 ||- ([][]a) and b and <>b;
+print v3
+
