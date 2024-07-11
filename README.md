@@ -1,4 +1,4 @@
-CS 4110 Final Project
+CS 4110 Final Project (from college, we were allowed to make this public because the project was entirely open-ended, and the professor had confirmed so)
 ==================
 
 The Files
